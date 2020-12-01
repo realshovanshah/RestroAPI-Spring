@@ -9,7 +9,6 @@ public class Category {
     private String id;
     private String name;
     private String description;
-//    private double price;
 
     public Category() {
     }

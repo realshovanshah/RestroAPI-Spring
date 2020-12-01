@@ -12,27 +12,27 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/category")
-    public List<Category> getAllItems(){
+    public List<Category> getAllCategories(){
         return categoryService.getAllItems();
     }
 
     @GetMapping("/category/{id}")
-    public Category getItem(@PathVariable String id){
+    public Category getCategory(@PathVariable String id){
         return categoryService.getItem(id);
     }
 
     @PostMapping("/category")
-    public void postItem(@RequestBody Category category){
+    public void postCategory(@RequestBody Category category){
         categoryService.addItem(category);
     }
 
     @PutMapping("/category/{id}")
-    public void updateItem(@PathVariable String id, @RequestBody Category category){
+    public void updateCategory(@PathVariable String id, @RequestBody Category category){
         categoryService.updateItem(id, category);
     }
 
     @DeleteMapping("/category/{id}")
-    public void deleteItem(@PathVariable String id){
+    public void deleteCategory(@PathVariable String id){
         categoryService.deleteItem(id);
     }
 

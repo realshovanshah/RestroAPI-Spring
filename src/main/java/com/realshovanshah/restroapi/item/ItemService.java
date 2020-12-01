@@ -25,6 +25,13 @@ public class ItemService {
         return items;
     }
 
+    public List<Item> getItemsByCategory(String categoryId){
+        List<Item> items = new ArrayList<>();
+        itemRepository.findByCategoryId(categoryId)
+                .forEach(items::add);
+        return items;
+    }
+
     public Item getItem(String id) {
 //        return items.stream().filter(i -> i.getId().equals(id)).findFirst().get();
         return itemRepository.findById(id).get();
@@ -34,7 +41,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public void updateItem(String id, Item item) {
+    public void updateItem(Item item) {
 //        for (int i=0; i<items.size(); i++){
 //            Item temp = items.get(i);
 //            if (temp.getId().equals(id)){
