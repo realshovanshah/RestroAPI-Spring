@@ -1,5 +1,7 @@
 package com.realshovanshah.restroapi.category;
 
+import com.realshovanshah.restroapi.item.Item;
+import com.realshovanshah.restroapi.item.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
 //    private List<Item> items =  new ArrayList<>(Arrays.asList(
 //            new Item("1", "Rumpum", "Tasty tasty", 100.0),
@@ -45,7 +50,17 @@ public class CategoryService {
     }
 
     public void deleteItem(String id) {
-//        items.removeIf(i -> i.getId().equals(id));
-        categoryRepository.deleteById(id);
+        List<Item> items = new ArrayList<>();
+
+        itemRepository.findAll().forEach(items::add);
+        int i = 0;
+        while (i < items.size()){
+            if (!items.get(i).getCategory().getId().equals(id)){
+                categoryRepository.deleteById(id);
+            }
+            System.out.println("Can't Delete: The id " + id + " exists!");
+            i++;
+        }
+
     }
 }
