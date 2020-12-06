@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Service
 public class ItemService {
@@ -34,7 +35,9 @@ public class ItemService {
 
     public Item getItem(String id) {
 //        return items.stream().filter(i -> i.getId().equals(id)).findFirst().get();
+//        return itemRepository.findById(id).orElseGet(() -> new Item());
         return itemRepository.findById(id).get();
+
     }
 
     public void addItem(Item item) {
