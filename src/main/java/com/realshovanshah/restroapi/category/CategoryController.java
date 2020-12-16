@@ -1,11 +1,18 @@
 package com.realshovanshah.restroapi.category;
 
+import org.jsondoc.core.annotation.Api;
+import org.jsondoc.core.pojo.ApiStage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Api(
+        name="Menu Category API",
+        description = "Provides a list of methods for managing the category database",
+        stage = ApiStage.RC
+    )
 public class CategoryController {
 
     @Autowired
