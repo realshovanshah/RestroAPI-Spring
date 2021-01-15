@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Api(name = "Users Api", description = "Provides methods that interacts with the user database.", stage = ApiStage.RC)
-@RestController
+@RestController("/api/auth")
 public class UserController {
 
     @Autowired
