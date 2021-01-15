@@ -1,4 +1,4 @@
-package com.realshovanshah.restroapi.auth;
+package com.realshovanshah.restroapi.auth.model;
 
     enum UserRole {
 

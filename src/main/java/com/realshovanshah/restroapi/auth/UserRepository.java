@@ -1,5 +1,6 @@
 package com.realshovanshah.restroapi.auth;
 
+import com.realshovanshah.restroapi.auth.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

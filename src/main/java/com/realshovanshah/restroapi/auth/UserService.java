@@ -1,5 +1,6 @@
 package com.realshovanshah.restroapi.auth;
 
+import com.realshovanshah.restroapi.auth.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +26,23 @@ public class UserService implements UserDetailsService{
     }
 
     public void createUser(User user){
+        final String encryptedPassword = passwordEncoder().encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         userRepository.save(user);
+    }
+
+    public void updateUser(User user){
+        userRepository.save(user);
+    }
+
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        userRepository.findAll().forEach(user -> System.out.println(user.getUsername()));
-        Optional<User> user = userRepository.findByEmail(email);
+//        userRepository.findAll().forEach(user -> System.out.println(user.getUsername()));
+        final Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             return user.get();
         }
