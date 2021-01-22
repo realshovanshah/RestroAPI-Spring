@@ -46,6 +46,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jsondoc</groupId>
             <artifactId>jsondoc-ui-webjar</artifactId>
             <version>1.2.22</version>
@@ -57,10 +62,15 @@
             <version>1.2.22</version>
         </dependency>
 
-        <!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--        </dependency>-->
+        		<dependency>
+        			<groupId>org.springframework.session</groupId>
+        			<artifactId>spring-session-data-redis</artifactId>
+        		</dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
