@@ -40,6 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .authenticated();
 //                .and()
 //                .httpBasic();
+
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -47,6 +48,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

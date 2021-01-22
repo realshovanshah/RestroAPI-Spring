@@ -8,13 +8,22 @@ import org.jsondoc.core.annotation.Api;
 import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.pojo.ApiStage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
 import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
+import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
+import org.springframework.session.web.http.HttpSessionIdResolver;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.SessionScope;
 //import org.springframework.session.web.http.HttpSessionStrategy;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
 
@@ -25,6 +34,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    HeaderHttpSessionIdResolver headerHttpSessionIdResolver;
 
 
     @PostConstruct
@@ -48,8 +61,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
-        return userService.login(loginRequest);
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest, SessionScope sessionScope){
+
+        AuthenticationResponse response = userService.login(loginRequest);
+//        System.out.println(sessionScope.get("X-Auth-Token", ));
+        return response;
+
     }
 
     @DeleteMapping("/user/{id}")

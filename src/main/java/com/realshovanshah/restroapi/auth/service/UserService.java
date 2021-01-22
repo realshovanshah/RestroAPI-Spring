@@ -21,6 +21,7 @@ import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.SessionRepository;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.RedisSessionRepository;
+import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,10 +40,8 @@ public class UserService implements UserDetailsService{
     private EmailSenderService emailSenderService;
     @Autowired
     private AuthenticationManager authenticationManager;
-//    @Autowired
-//    SessionRepository sessionRepository;
-//    @Autowired
-//    RedisIndexedSessionRepository redisSessionRepository;
+
+
 
 
     @Autowired
@@ -67,8 +66,6 @@ public class UserService implements UserDetailsService{
     public AuthenticationResponse login(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-//        System.out.println(redisSessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, "admin@gmail.com"));
-//        System.out.println(sessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, "admin@gmail.com").keySet().stream().findFirst());
 //        sessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, "admin@gmail.com").keySet().forEach(session -> System.out.println(((String) session)));
         return new AuthenticationResponse("test", loginRequest.getEmail());
 
