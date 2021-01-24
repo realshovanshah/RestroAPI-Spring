@@ -6,6 +6,7 @@ import com.realshovanshah.restroapi.auth.model.User;
 import com.realshovanshah.restroapi.auth.model.VerificationToken;
 import com.realshovanshah.restroapi.auth.repository.UserRepository;
 import com.realshovanshah.restroapi.auth.repository.VerificationTokenRepository;
+import com.realshovanshah.restroapi.utils.ResturaApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
@@ -24,6 +25,7 @@ import org.springframework.session.data.redis.RedisSessionRepository;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +42,6 @@ public class UserService implements UserDetailsService{
     private EmailSenderService emailSenderService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
-
 
 
     @Autowired
@@ -76,9 +76,9 @@ public class UserService implements UserDetailsService{
         final SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(userMail);
         mailMessage.setSubject("Mail Confirmation Link!");
-        mailMessage.setFrom("shovan.shah8@gmail.com");
+        mailMessage.setFrom("realshovanshah@gmail.com");
         mailMessage.setText(
-                "Thank you for registering. Please click on the below link to activate your account." + "http://localhost:8080/sign-up/confirm?token="
+                "Thank you for registering. Please click on the below link to activate your account. " + "http://localhost:8080/api/auth/account-verification/"
                         + token);
 
         emailSenderService.sendEmail(mailMessage);
@@ -122,5 +122,21 @@ public class UserService implements UserDetailsService{
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+        verificationToken.orElseThrow(() -> new ResturaApiException("Invalid Token"));
+        getUserAndEnable(verificationToken.get());
+
+    }
+
+    @Transactional
+    private void getUserAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUser().getUsername();
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new ResturaApiException("User with email" + username + "not found"));
+        user.setEnabled(true);
+        userRepository.save(user);
+
     }
 }

@@ -8,22 +8,11 @@ import org.jsondoc.core.annotation.Api;
 import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.pojo.ApiStage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.Session;
-import org.springframework.session.SessionRepository;
-import org.springframework.session.data.redis.RedisIndexedSessionRepository;
-import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
-import org.springframework.session.web.http.HttpSessionIdResolver;
-import org.springframework.session.web.http.SessionRepositoryFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.SessionScope;
 //import org.springframework.session.web.http.HttpSessionStrategy;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
 
@@ -36,14 +25,6 @@ public class UserController {
     private UserService userService;
 
 
-    @Autowired
-    HeaderHttpSessionIdResolver headerHttpSessionIdResolver;
-
-
-    @PostConstruct
-    void test() {
-        System.out.println("debug postconstruct");
-    }
 
     @ApiMethod
     @GetMapping("/users")
@@ -60,12 +41,18 @@ public class UserController {
         return (User) userService.loadUserByUsername(user.getUsername());
     }
 
-    @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest, SessionScope sessionScope){
+    @GetMapping("account-verification/{token}")
+    public ResponseEntity<String> verifyAccount(@PathVariable String token){
+        userService.verifyAccount(token);
+        return new ResponseEntity<>("Account Activated Sucessfully", HttpStatus.OK);
+    }
 
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequest loginRequest){
+        char c = 0;
         AuthenticationResponse response = userService.login(loginRequest);
-//        System.out.println(sessionScope.get("X-Auth-Token", ));
-        return response;
+//        response.setAuthToken((String) sessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, "admin@gmail.com").keySet().stream().findFirst().get());
+//        return response;
 
     }
 

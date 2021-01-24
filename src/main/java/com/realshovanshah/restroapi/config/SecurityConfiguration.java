@@ -1,6 +1,8 @@
 package com.realshovanshah.restroapi.config;
 
+import com.realshovanshah.restroapi.auth.TokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,8 +18,10 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
+import javax.servlet.Filter;
+
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -59,5 +63,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     HttpSessionIdResolver httpSessionStrategy() {
         return new HeaderHttpSessionIdResolver("X-Auth-Token");
+    }
+
+
+    @Bean(name = "filter")
+    public Filter someFilter() {
+        return new TokenFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistration() {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(someFilter());
+        registration.addUrlPatterns("/api/auth/login");
+        registration.setName("filter");
+        registration.setOrder(1);
+        return registration;
     }
 }
