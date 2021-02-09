@@ -9,7 +9,6 @@ import com.realshovanshah.restroapi.auth.repository.VerificationTokenRepository;
 import com.realshovanshah.restroapi.utils.ResturaApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,14 +17,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.SessionRepository;
-import org.springframework.session.data.redis.RedisIndexedSessionRepository;
-import org.springframework.session.data.redis.RedisSessionRepository;
-import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +34,7 @@ public class UserService implements UserDetailsService{
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
     @Autowired
-    private EmailSenderService emailSenderService;
+    private EmailService emailService;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -60,7 +55,8 @@ public class UserService implements UserDetailsService{
         final VerificationToken verificationToken = new VerificationToken(user);
         verificationTokenService.saveVerificationToken(verificationToken);
         System.out.println(user.getEmail());
-        sendConfirmationMail(user.getEmail(), verificationToken.getToken());
+        emailService.sendConfirmationMail(user.getEmail(), verificationToken.getToken(), "Thank you for registering. Please click on the below link to activate your account. "
+                + "http://localhost:8080/api/auth/account-verification/");
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest){
@@ -71,18 +67,6 @@ public class UserService implements UserDetailsService{
 
     }
 
-    void sendConfirmationMail(String userMail, String token) {
-
-        final SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(userMail);
-        mailMessage.setSubject("Mail Confirmation Link!");
-        mailMessage.setFrom("realshovanshah@gmail.com");
-        mailMessage.setText(
-                "Thank you for registering. Please click on the below link to activate your account. " + "http://localhost:8080/api/auth/account-verification/"
-                        + token);
-
-        emailSenderService.sendEmail(mailMessage);
-    }
 
     public void updateUser(User user){
         userRepository.save(user);
@@ -138,5 +122,12 @@ public class UserService implements UserDetailsService{
         user.setEnabled(true);
         userRepository.save(user);
 
+    }
+
+    public void resetPassword(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResturaApiException("User with email" + email + "not found"));
+        Optional<VerificationToken> resetToken = verificationTokenRepository.findByUser(user);
+        emailService.sendConfirmationMail(user.getEmail(), resetToken.get().getToken(), "Thank you for registering. Please click on the below link to reset your password. " +
+                "http://localhost:8080/api/auth/reset-password/");
     }
 }

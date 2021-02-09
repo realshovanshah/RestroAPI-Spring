@@ -1,6 +1,7 @@
 package com.realshovanshah.restroapi.item;
 
 import com.realshovanshah.restroapi.category.Category;
+import io.leangen.graphql.annotations.GraphQLQuery;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,8 +10,12 @@ import java.util.List;
 public class Item {
     @Id
     private String id;
+
+    @GraphQLQuery(name = "name", description = "the food's name")
     private String name;
+    @GraphQLQuery(name = "name", description = "the food's description")
     private String description;
+    @GraphQLQuery(name = "name", description = "the food's price")
     private double price;
 
     @ManyToOne

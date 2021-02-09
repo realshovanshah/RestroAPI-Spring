@@ -1,5 +1,8 @@
 package com.realshovanshah.restroapi.item;
 
+import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Service
+@GraphQLApi
 public class ItemService {
 
     @Autowired
@@ -20,9 +24,18 @@ public class ItemService {
 //            new Item("3", "Pasta", "Imported and contains pork", 300)
 //    ));
 
+    @GraphQLQuery(name = "items")
     public List<Item> getAllItems(){
         List<Item> items = new ArrayList<>();
         itemRepository.findAll().forEach(items::add);
+        return items;
+    }
+
+    @GraphQLQuery(name = "item")
+    public List<Item> getItemsByName(@GraphQLArgument(name = "name") String name){
+        List<Item> items = new ArrayList<>();
+        itemRepository.findByName(name)
+                .forEach(items::add);
         return items;
     }
 

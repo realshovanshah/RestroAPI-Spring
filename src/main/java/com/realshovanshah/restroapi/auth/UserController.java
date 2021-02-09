@@ -36,9 +36,9 @@ public class UserController {
 
     @ApiMethod
     @PostMapping("/signup")
-    public User signup(@RequestBody User user){
+    public ResponseEntity signup(@RequestBody User user){
         userService.signUp(user);
-        return (User) userService.loadUserByUsername(user.getUsername());
+        return new ResponseEntity<>("Account registration successful", HttpStatus.OK);
     }
 
     @GetMapping("account-verification/{token}")
@@ -53,13 +53,20 @@ public class UserController {
         AuthenticationResponse response = userService.login(loginRequest);
 //        response.setAuthToken((String) sessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, "admin@gmail.com").keySet().stream().findFirst().get());
 //        return response;
-
     }
+
+    @PostMapping("/forgot-password")
+    public void forgotPassword(@RequestBody String email){
+        userService.resetPassword(email);
+    }
+
+//    @GetMapping("/change-password/{token}")
+//    public ResponseEntity<String> changePassword(){
+//        userService.resetPassword();
+//    }
 
     @DeleteMapping("/user/{id}")
     public void deleteCategory(@PathVariable Long id){
         userService.deleteUser(id);
     }
-
-
 }

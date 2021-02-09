@@ -12,12 +12,23 @@ import java.util.Arrays;
 
 @Service
 @AllArgsConstructor
-class EmailSenderService {
+class EmailService {
 
     private JavaMailSender javaMailSender;
 
+    void sendConfirmationMail(String userMail, String token, String prompt) {
+
+        final SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(userMail);
+        mailMessage.setSubject("Mail Confirmation Link!");
+        mailMessage.setFrom("realshovanshah@gmail.com");
+        mailMessage.setText(prompt + token);
+
+        sendEmail(mailMessage);
+    }
+
     @Async
-    public void sendEmail(SimpleMailMessage email) {
+    private void sendEmail(SimpleMailMessage email) {
         try {
             javaMailSender.send(email);
         }catch (MailException e){
