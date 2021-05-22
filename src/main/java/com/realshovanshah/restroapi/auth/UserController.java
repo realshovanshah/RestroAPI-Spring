@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.session.web.http.HttpSessionStrategy;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,7 +22,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
 
 
     @ApiMethod
